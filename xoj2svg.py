@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import argparse
+
 from lxml import etree
 from lxml.builder import ElementMaker
 import numpy as np
@@ -39,6 +41,24 @@ def convert_xoj(xoj_root):
 def convert_xoj_file(in_name, out_name):
     convert_xoj(etree.parse(in_name)).write(out_name)
 
-if __name__ == '__main__':
-    import sys
-    convert_xoj_file(sys.argv[1], sys.argv[2])
+
+def create_argparser():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument(
+        "xoj",
+        metavar="INFILE",
+        help="xoj file",
+        type=argparse.FileType("rb"),
+    )
+    p.add_argument(
+        "svg",
+        metavar="OUTFILE",
+        help="svg file",
+    )
+    return p
+
+
+if __name__ == "__main__":
+    parser = create_argparser()
+    args = parser.parse_args()
+    convert_xoj_file(args.xoj.name, args.svg)
